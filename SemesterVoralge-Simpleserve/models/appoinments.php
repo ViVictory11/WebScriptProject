@@ -7,7 +7,7 @@ class Appo {
     public $duration;
     public $creator;
 
-    function __constructAppo($idAp, $title, $place, $desc, $duration, $creator) {
+    function __construct($idAp, $title, $place, $desc, $duration, $creator) {
         $this->idAppo = $idAp;
         $this->title = $title;
         $this->place=$place;
@@ -23,7 +23,7 @@ class AppoTime {
     public $checked;
     public $appoId;
 
-    function __constructAppoTime($idApT, $dateT, $chck, $idAp) {
+    function __construct($idApT, $dateT, $chck, $idAp) {
         $this->idAppoTime = $idApT;
         $this->dateTime = $dateT;
         $this->checked=$chck;
@@ -37,7 +37,7 @@ class User {
     public $comment;
     public $appoTimeId;
 
-    function __constructUser($idU, $nm, $cmm, $idApT) {
+    function __construct($idU, $nm, $cmm, $idApT) {
         $this->idUser = $idU;
         $this->name = $nm;
         $this->comment=$cmm;
