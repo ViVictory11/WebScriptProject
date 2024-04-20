@@ -8,18 +8,18 @@ class DataHandler
         return $res;
     }
 
-   /* public function queryPersonById($id)
+    public function queryAppointmentById($idAp)
     {
         $result = array();
         foreach ($this->queryAppointments() as $val) {
-            if ($val[0]->id == $id) {
+            if ($val[0]->idAppo == $idAp) {
                 array_push($result, $val);
             }
         }
         return $result;
     }
 
-    public function queryPersonByName($name)
+    /*public function queryPersonByName($name)
     {
         $result = array();
         foreach ($this->queryAppointments() as $val) {

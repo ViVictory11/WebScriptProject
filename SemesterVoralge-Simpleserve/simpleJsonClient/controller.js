@@ -13,7 +13,7 @@ function loaddata(searchterm) {
         type: "GET",
         url: "../serviceHandler.php",
         cache: false,
-        data: {method: "queryPersonByName", param: searchterm},
+        data: {method: "queryAppointments", param: searchterm},
         dataType: "json",
         success: function (response) {
             
