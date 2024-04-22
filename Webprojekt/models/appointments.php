@@ -1,12 +1,12 @@
 <?php
-class Person {
+class Appointment {
     public $id;
     public $title;
     public $place;
     public $description;
     public $duration;
     public $creator;
-    public $times; // Array zur Speicherung von Time-Objekten
+    public $times;
 
     function __construct($id, $ti, $pl, $desc, $dur, $cre) {
         $this->id = $id;
@@ -23,17 +23,15 @@ class Person {
 class Time {
   public $id;
   public $date;
-  public $votes;
   public $idAppointment;
-  public $users; // Array zur Speicherung von User-Objekten
+  public $users;
   
 
-  function __construct($id, $dt, $vt, $idAppo) {
+  function __construct($id, $dt, $idAppo) {
       $this->id = $id;
       $this->date = $dt;
-      $this->votes=$vt;
       $this->idAppointment= $idAppo;
-      $this->users = array(); // Initialisiere das Array für User-Objekte
+      $this->users = array();
     }
 }
 
