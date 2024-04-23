@@ -17,7 +17,7 @@ $(document).ready(function () {
     $("#formNewAppo").submit(function(event) {
         event.preventDefault();
         var formData = $(this).serializeArray();
-        
+          
         formData.push({ name: "title", value: $("input[name='title']").val() });
         formData.push({ name: "description", value: $("input[name='description']").val() });
         formData.push({ name: "duration", value: $("input[name='duration']").val() });
@@ -27,26 +27,6 @@ $(document).ready(function () {
         submitFormData(formData);
     });
 });
-
-function submitFormData(formData) {
-    $.ajax({
-        url: "../db/submitHandlerCreate.php",
-        type: 'POST',
-        data: formData,
-        dataType: 'json',
-        success: function (response) {
-            if (response.success) {
-                $('#message').html('<span style="color: green">Form submitted successfully</span>');
-            } else {
-                $('#message').html('<span style="color: red">Form not submitted. Some error occurred.</span>');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error(error);
-            $('#message').html('<span style="color: red">Error submitting form. Please try again later.</span>');
-        }
-    });
-}
 
 function loaddata() {
     $.ajax({
@@ -58,14 +38,17 @@ function loaddata() {
         success: function(response) {
             $("#app-container").empty();
 
-            // Initialize earliest and latest dates with extreme values
-            var earliestDate = new Date(Number.MAX_VALUE);
-            var latestDate = new Date(0);
-            var currentDate = new Date();
+            response.forEach((appointment) => {
+                // Initialize earliest and latest dates for each appointment
+                var earliestDate = new Date(0);
+                var latestDate = new Date(0);
+                var currentDate = new Date();
 
-            response.forEach((person) => {
-                person.times.forEach((time) => {
+                console.log("Current Date:", currentDate);
+
+                appointment.times.forEach((time) => {
                     var appointmentDate = new Date(time.date);
+                    console.log("Appointment Date:", appointmentDate); // Log each appointment date
                     if (appointmentDate < earliestDate) {
                         earliestDate = appointmentDate;
                     }
@@ -73,39 +56,45 @@ function loaddata() {
                         latestDate = appointmentDate;
                     }
                 });
-            });
 
-            var isAllPast = latestDate < currentDate;
-            var isAllFuture = earliestDate > currentDate;
-            var isMixed = !isAllPast && !isAllFuture;
+                console.log("Earliest Date:", earliestDate);
+                console.log("Latest Date:", latestDate);
 
-            response.forEach((person) => {
+                // Determine appointment status based on appointment times
+                var isAllPast = latestDate < currentDate;
+                var isAllFuture = earliestDate > currentDate;
+                var isMixed = !isAllPast && !isAllFuture;
+
+                console.log("isAllPast:", isAllPast);
+                console.log("isAllFuture:", isAllFuture);
+                console.log("isMixed:", isMixed);
+
+                // Display appointments based on status
                 var outerEntry = $("<div class='entry'></div>");
 
                 if (isAllPast || (isMixed && latestDate <= currentDate)) {
-                    outerEntry.css("background-color", "#D3D3D3");
+                    outerEntry.css("background-color", "#D3D3D3"); // Grey for all past
                 } else {
-                    outerEntry.css("background-color", "#89CFF0");
+                    outerEntry.css("background-color", "#89CFF0"); // Babyblue for mixed or all future
                 }
-
                 outerEntry.css({
                     "font-size": "1.5em",
                     "margin": "10px",
                     "padding": "10px"
                 });
 
-                var titleDiv = $("<div class='title'>" + person.title + "</div>");
+                var titleDiv = $("<div class='title'>" + appointment.title + "</div>");
                 outerEntry.append(titleDiv);
 
                 var innerEntry = $("<div class='inner'></div>");
-                innerEntry.append("<p>Place: " + person.place + "</p>");
-                innerEntry.append("<p>Duration: " + person.duration + "</p>");
-                innerEntry.append("<p>Description: " + person.description + "</p>");
-                innerEntry.append("<p>Creator: " + person.creator + "</p>");
+                innerEntry.append("<p>Place: " + appointment.place + "</p>");
+                innerEntry.append("<p>Duration: " + appointment.duration + "</p>");
+                innerEntry.append("<p>Description: " + appointment.description + "</p>");
+                innerEntry.append("<p>Creator: " + appointment.creator + "</p>");
                 innerEntry.append("<p>All Votes: </p>");
 
                 var allVotesList = $("<ul></ul>");
-                person.times.forEach((time) => {
+                appointment.times.forEach((time) => {
                     time.users.forEach((user) => {
                         var listItem = $("<li></li>");
                         listItem.append("Date: " + time.date + ", User: " + user.name + ", Checked: " + (user.checked ? "Yes" : "No"));
@@ -122,7 +111,7 @@ function loaddata() {
 
                 var addedTimeSlots = [];
 
-                person.times.forEach((time) => {
+                appointment.times.forEach((time) => {
                     if (!addedTimeSlots.includes(time.date)) {
                         addedTimeSlots.push(time.date);
                         var form = $("<form id='submitForm' method='POST' action='../db/submitHandler.php'></form>");
@@ -181,6 +170,7 @@ function loaddata() {
         }
     });
 }
+
 
 
 
