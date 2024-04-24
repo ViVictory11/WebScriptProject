@@ -201,6 +201,29 @@ function submitForm(formContainer) {
         success: function (response) {
             if (response.success) {
                 $('#message').html('<span style="color: green">Form submitted successfully</span>');
+                location.reload();
+            } else {
+                $('#message').html('<span style="color: red">Form not submitted. Some error occurred.</span>');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+            $('#message').html('<span style="color: red">Error submitting form. Please try again later.</span>');
+        }
+    });
+}
+
+
+function submitFormData(formData) {
+    $.ajax({
+        url: "../db/submitHandlerCreate.php",
+        type: 'POST',
+        data: formData,
+        dataType: 'json',
+        success: function (response) {
+            if (response.success) {
+                $('#message').html('<span style="color: green">Form submitted successfully</span>');
+                location.reload();
             } else {
                 $('#message').html('<span style="color: red">Form not submitted. Some error occurred.</span>');
             }
