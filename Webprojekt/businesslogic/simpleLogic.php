@@ -1,12 +1,6 @@
 <?php
 include("db/dataHandler.php");
-<<<<<<< HEAD
-//creating class that includes dataHandler and uses it as a value
-class SimpleLogic
-=======
-
 class SimpleLogic //SimpleLogic class is defined
->>>>>>> 8996afb3f3f437ca5c595732854e3b79a4b0bea3
 {
     private $dh;
     function __construct()
