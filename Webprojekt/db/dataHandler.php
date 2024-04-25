@@ -5,8 +5,9 @@ include("db_config.php");
 class DataHandler{
     private $mysqli;
 
+    
     public function __construct() {
-        $this->mysqli = new mysqli('127.0.0.1:3306', 'bif2webscriptinguser', 'bif2021', 'appofinder');
+        $this->mysqli = new mysqli(HOST, USER, PASSWORD, DATABASE);
 
         if ($this->mysqli->connect_errno > 0) {
             die('Unable to connect to database [' . $this->mysqli->connect_error . ']');

@@ -1,13 +1,13 @@
 <?php
 include('db_config.php');
-$dbHost = '127.0.0.1:3306';
+/*$dbHost = '127.0.0.1:3306';
 $dbUser = 'bif2webscriptinguser';
 $dbPass = 'bif2021';
-$dbName = 'appofinder';
+$dbName = 'appofinder';*/
 
 try {
-    $conn = new PDO("mysql:host=$dbHost;dbname=$dbName", $dbUser, $dbPass);
-    //$conn = new PDO("mysql:host=HOST;dbname=DATABASE", USER, PASSWORD);
+    //$conn = new PDO("mysql:host=$dbHost;dbname=$dbName", $dbUser, $dbPass);
+    $conn = new PDO("mysql:host=" . HOST . ";dbname=" . DATABASE, USER, PASSWORD);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
