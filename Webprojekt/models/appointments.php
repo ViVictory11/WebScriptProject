@@ -1,4 +1,6 @@
 <?php
+
+//The classes and constructor that will be needed in other files
 class Appointment {
     public $id;
     public $title;
