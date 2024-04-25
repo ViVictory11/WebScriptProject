@@ -94,15 +94,32 @@ function loaddata() {
                 innerEntry.append("<p>All Votes: </p>");
 
                 var allVotesList = $("<ul></ul>");
-                appointment.times.forEach((time) => {
-                    time.users.forEach((user) => {
-                        var listItem = $("<li></li>");
-                        listItem.append("Date: " + time.date + ", User: " + user.name + ", Checked: " + (user.checked ? "Yes" : "No"));
-                        listItem.append(", Comment: " + user.comment);
-                        allVotesList.append(listItem);
+                if (appointment.times.length === 0) {
+                    allVotesList.append("<li><p>No time options available yet!</p></li>");
+                } else {
+                    appointment.times.forEach((time) => {
+                        var timeVotesList = $("<ul></ul>");
+                        var timeListItem = $("<li>Date: " + time.date + "</li>");
+                        if (time.users.length === 0) {
+                            timeVotesList.append("<li><p>No votes yet made!</p></li>");
+                        } else {
+                            time.users.forEach((user) => {
+                                var listItem = $("<li></li>");
+                                if (user.name === null) {
+                                    listItem.append("<p>No votes yet made!</p>");
+                                } else {
+                                    listItem.append("User: " + user.name + ", Checked: " + (user.checked ? "Yes" : "No"));
+                                    listItem.append(", Comment: " + user.comment);
+                                }
+                                timeVotesList.append(listItem);
+                            });
+                        }
+                        timeListItem.append(timeVotesList);
+                        allVotesList.append(timeListItem);
                     });
-                });
+                }
                 innerEntry.append(allVotesList);
+
                 innerEntry.hide();
                 innerEntry.css("font-size", "1rem");
 
@@ -165,7 +182,7 @@ function loaddata() {
 
             $("#app-container").show();
         },
-        error: function(xhr, status, error) {
+        error: function(error) {
             console.error(error);
         }
     });
@@ -215,6 +232,7 @@ function submitForm(formContainer) {
 
 
 function submitFormData(formData) {
+    // If all required fields are filled, proceed with form submission
     $.ajax({
         url: "../db/submitHandlerCreate.php",
         type: 'POST',
