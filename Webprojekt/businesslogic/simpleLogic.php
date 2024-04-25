@@ -1,6 +1,6 @@
 <?php
 include("db/dataHandler.php");
-
+//creating class that includes dataHandler and uses it as a value
 class SimpleLogic
 {
     private $dh;
@@ -8,7 +8,7 @@ class SimpleLogic
     {
         $this->dh = new DataHandler();
     }
-
+    //function for usage of any functions for database (easily expendable)
     function handleRequest($method)
     {
         switch ($method) {

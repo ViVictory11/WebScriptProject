@@ -1,10 +1,12 @@
 $(document).ready(function () {
     loaddata();
     $("#newAppo").hide();
+    //visibility of the new appoinment form
     $("#showNew").click(function() {
         $("#newAppo").slideToggle();
     });
-
+    //form for adding new appoinment times where 
+    //appending every new "smaller" form to main form occurs
     $("#addTimeOption").click(function() {
         var timeOptionInput = $("<div class='timeOption'></div>");
         timeOptionInput.append("<label>Date:</label><br>");
@@ -15,9 +17,9 @@ $(document).ready(function () {
     });
 
     $("#formNewAppo").submit(function(event) {
-        event.preventDefault();
-        var formData = $(this).serializeArray();
-          
+        event.preventDefault(); //preventing html to handle submission, letting js to do it
+        var formData = $(this).serializeArray(); //preparing array to handlaing objects of jQuery
+        //putting the inputs from the form into the array-object
         formData.push({ name: "title", value: $("input[name='title']").val() });
         formData.push({ name: "description", value: $("input[name='description']").val() });
         formData.push({ name: "duration", value: $("input[name='duration']").val() });
@@ -36,7 +38,7 @@ function loaddata() {
         data: { method: "queryDataFromDatabase" },
         dataType: "json",
         success: function(response) {
-            $("#app-container").empty();
+            $("#app-container").empty(); //precution for no overriding of printing appoinments
 
             response.forEach((appointment) => {
                 // Initialize earliest and latest dates for each appointment
@@ -44,11 +46,9 @@ function loaddata() {
                 var latestDate = new Date(0);
                 var currentDate = new Date();
 
-                console.log("Current Date:", currentDate);
-
+                //conditions for checking the dates of times
                 appointment.times.forEach((time) => {
                     var appointmentDate = new Date(time.date);
-                    console.log("Appointment Date:", appointmentDate); // Log each appointment date
                     if (appointmentDate < earliestDate) {
                         earliestDate = appointmentDate;
                     }
@@ -57,17 +57,10 @@ function loaddata() {
                     }
                 });
 
-                console.log("Earliest Date:", earliestDate);
-                console.log("Latest Date:", latestDate);
-
                 // Determine appointment status based on appointment times
                 var isAllPast = latestDate < currentDate;
                 var isAllFuture = earliestDate > currentDate;
                 var isMixed = !isAllPast && !isAllFuture;
-
-                console.log("isAllPast:", isAllPast);
-                console.log("isAllFuture:", isAllFuture);
-                console.log("isMixed:", isMixed);
 
                 // Display appointments based on status
                 var outerEntry = $("<div class='entry'></div>");
@@ -83,9 +76,11 @@ function loaddata() {
                     "padding": "10px"
                 });
 
+                //putting in OuterEntry just the title (what is visible before a click)
                 var titleDiv = $("<div class='title'>" + appointment.title + "</div>");
                 outerEntry.append(titleDiv);
 
+                //all infomration extracted about the appoinment from database in new div
                 var innerEntry = $("<div class='inner'></div>");
                 innerEntry.append("<p>Place: " + appointment.place + "</p>");
                 innerEntry.append("<p>Duration: " + appointment.duration + "</p>");
@@ -93,6 +88,7 @@ function loaddata() {
                 innerEntry.append("<p>Creator: " + appointment.creator + "</p>");
                 innerEntry.append("<p>All Votes: </p>");
 
+                //handleing stragedy for votes (if there are any times, any votes, how many votes)
                 var allVotesList = $("<ul></ul>");
                 if (appointment.times.length === 0) {
                     allVotesList.append("<li><p>No time options available yet!</p></li>");
@@ -100,20 +96,16 @@ function loaddata() {
                     appointment.times.forEach((time) => {
                         var timeVotesList = $("<ul></ul>");
                         var timeListItem = $("<li>Date: " + time.date + "</li>");
-                        if (time.users.length === 0) {
-                            timeVotesList.append("<li><p>No votes yet made!</p></li>");
-                        } else {
-                            time.users.forEach((user) => {
+                        time.users.forEach((user) => {
                                 var listItem = $("<li></li>");
-                                if (user.name === null) {
-                                    listItem.append("<p>No votes yet made!</p>");
+                                if (user.name === null) { //checking if any user has given any input yet
+                                    listItem.append("No votes yet made!");
                                 } else {
                                     listItem.append("User: " + user.name + ", Checked: " + (user.checked ? "Yes" : "No"));
                                     listItem.append(", Comment: " + user.comment);
                                 }
                                 timeVotesList.append(listItem);
                             });
-                        }
                         timeListItem.append(timeVotesList);
                         allVotesList.append(timeListItem);
                     });
@@ -123,12 +115,14 @@ function loaddata() {
                 innerEntry.hide();
                 innerEntry.css("font-size", "1rem");
 
+                //creating entry for the form for vote-submission
                 var formEntry = $("<div class='formEntry'></div>");
                 var formTimesList = $("<ul class='formTimesList'></ul>");
 
                 var addedTimeSlots = [];
 
                 appointment.times.forEach((time) => {
+                    //making sure there is no data override
                     if (!addedTimeSlots.includes(time.date)) {
                         addedTimeSlots.push(time.date);
                         var form = $("<form id='submitForm' method='POST' action='../db/submitHandler.php'></form>");
@@ -144,6 +138,7 @@ function loaddata() {
                 });
                 formEntry.append(formTimesList);
 
+                //only one commet pro form
                 var commentInput = $("<input type='text' name='comment' placeholder='Your Comment'>");
                 formEntry.append(commentInput);
 
@@ -156,13 +151,17 @@ function loaddata() {
                 formEntry.hide();
                 formEntry.css("font-size", "1rem");
 
+                //putting everything into the outerEntry
                 outerEntry.append(innerEntry);
                 outerEntry.append(formEntry);
-
+                
+                //appending the whole block into the html
                 $("#app-container").append(outerEntry);
 
-                formEntry.hide();
+                //formEntry.hide();
 
+                //managing that when an appoinment-times are all in the past,
+                //only details can be seen and nothing else.
                 if (!isAllPast) {
                     titleDiv.click(function() {
                         innerEntry.slideToggle();
@@ -189,10 +188,8 @@ function loaddata() {
 }
 
 
-
-
-
 function submitForm(formContainer) {
+    //collecting all the data into an array to send 
     var formDataArray = [];
     var name = formContainer.find('input[name=userName]').val();
     var comment = formContainer.find('input[name=comment]').val();
@@ -223,7 +220,7 @@ function submitForm(formContainer) {
                 $('#message').html('<span style="color: red">Form not submitted. Some error occurred.</span>');
             }
         },
-        error: function(xhr, status, error) {
+        error: function(error) {
             console.error(error);
             $('#message').html('<span style="color: red">Error submitting form. Please try again later.</span>');
         }
@@ -232,7 +229,7 @@ function submitForm(formContainer) {
 
 
 function submitFormData(formData) {
-    // If all required fields are filled, proceed with form submission
+    //the submitted data is checked outside of submitFormData
     $.ajax({
         url: "../db/submitHandlerCreate.php",
         type: 'POST',
@@ -246,7 +243,7 @@ function submitFormData(formData) {
                 $('#message').html('<span style="color: red">Form not submitted. Some error occurred.</span>');
             }
         },
-        error: function(xhr, status, error) {
+        error: function(error) {
             console.error(error);
             $('#message').html('<span style="color: red">Error submitting form. Please try again later.</span>');
         }

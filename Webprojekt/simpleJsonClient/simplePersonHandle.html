@@ -13,10 +13,13 @@
 
 </head>
 <body>
+  <!--container for messages that come up after submissions of forms-->
   <div id="message"></div>
   <h1>Appointment Finder</h1>
+  <!-- button for new appoinments, as well as container for the form-->
   <button id="showNew" style="margin: 10px; background-color: #89CCF0">Create Appointment</button><br>
   <div id="newAppo" style="margin: 10px;">
+    <!--form for new appoinment-->
     <form id="formNewAppo">
       <label>Title:</label><br>
       <input type="text" name="title" style="margin-bottom: 10px;" required><br>
@@ -32,12 +35,13 @@
       <div id="timeOptions">
       </div>
       <button type="button" id="addTimeOption" style="margin-top: 10px;">Add Time Option</button><br>
+      <!--Submission button for the form-->
       <button type="submit" style="margin-top: 10px;">Submit</button>
   </form>
 </div>
-
-    <div id="app-container">
-    </div>
+<!--container for all appoinments-->
+<div id="app-container">
+</div>
     
 </body>
 </html>

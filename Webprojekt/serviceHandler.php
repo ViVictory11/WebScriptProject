@@ -4,9 +4,10 @@ include("businesslogic/simpleLogic.php");
 $method = "";
 
 isset($_GET["method"]) ? $method = $_GET["method"] : false;
-
+//creating new class SimpleLogic
 $logic = new SimpleLogic();
 $result = $logic->handleRequest($method);
+//managment of error messages 
 if ($result == null) {
     response("GET", 400, null);
 } else {
